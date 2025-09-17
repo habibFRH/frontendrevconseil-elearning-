@@ -137,3 +137,38 @@ export interface LessonContentRequest {
   isDownloadable?: boolean;
 }
 
+// Enrollment types
+export enum EnrollmentStatus {
+  ACTIVE = 'ACTIVE',
+  COMPLETED = 'COMPLETED',
+  SUSPENDED = 'SUSPENDED',
+  DROPPED = 'DROPPED'
+}
+
+export interface Enrollment {
+  id: number;
+  studentId: number;
+  studentName: string;
+  studentEmail: string;
+  courseId: number;
+  courseTitle: string;
+  courseDescription?: string;
+  teacherName: string;
+  status: EnrollmentStatus;
+  progressPercentage: number;
+  enrolledAt: string;
+  completedAt?: string;
+  lastAccessedAt: string;
+}
+
+export interface EnrollmentRequest {
+  courseId: number;
+}
+
+export interface EnrollmentStats {
+  totalEnrollments: number;
+  activeEnrollments: number;
+  completedEnrollments: number;
+  averageProgress: number;
+}
+
