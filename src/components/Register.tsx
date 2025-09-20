@@ -152,7 +152,7 @@ const Register: React.FC = () => {
             {/* First and Last Name */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1 text-left">
                   First Name
                 </label>
                 <input
@@ -173,7 +173,7 @@ const Register: React.FC = () => {
                 )}
               </div>
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1 text-left">
                   Last Name
                 </label>
                 <input
@@ -197,7 +197,7 @@ const Register: React.FC = () => {
 
             {/* Username */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1 text-left">
                 Username
               </label>
               <div className="relative">
@@ -223,7 +223,7 @@ const Register: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 text-left">
                 Email
               </label>
               <div className="relative">
@@ -249,7 +249,7 @@ const Register: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1 text-left">
                 Password
               </label>
               <div className="relative">
@@ -281,7 +281,7 @@ const Register: React.FC = () => {
 
             {/* Role */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1 text-left">
                 Role
               </label>
               <select

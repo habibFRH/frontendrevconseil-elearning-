@@ -48,13 +48,13 @@ const LandingPage: React.FC = () => {
 
             {/* Center - Logo (Absolute positioning for perfect centering) */}
             <div className="absolute sm:fixed left-1/2 transform -translate-x-1/2 top-0 z-50 hover:s">
-              <div className="relative bg-yellow-500 px-8 py-3 shadow-md" style={{
+              <div className="relative bg-yellow-500 px-8 py-3 shadow-md rounded-b-full" style={{
                 clipPath: 'polygon(0% 0%, 100% 0%, 80% 140%, 20% 140%)',
                 minWidth: '180px',
                 textAlign: 'center'
               }}>
                 <h1 className="text-xl font-bold text-white">
-                  revcoinseil
+                  Firstep Academy
                 </h1>
               </div>
             </div>

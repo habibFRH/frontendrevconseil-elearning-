@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import type { User, Course, EnrollmentStats } from '../../types';
