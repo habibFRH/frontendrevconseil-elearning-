@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import type { LoginRequest } from '../types';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
@@ -11,7 +12,7 @@ const Login: React.FC = () => {
   });
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -21,6 +22,10 @@ const Login: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const navigateToRegister = () => {
+    navigate('/register');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,74 +44,100 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <button
-              onClick={() => navigate('/register')}
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              create a new account
-            </button>
-          </p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-yellow-400 rounded-full mb-4">
+            <Lock className="w-6 h-6 text-gray-800" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
+          <p className="text-gray-600 text-sm">Sign in to your account</p>
         </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+
+        {/* Card */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          {/* Error message */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded-md mb-4">
               {error}
             </div>
           )}
-          
+
           <div className="space-y-4">
+            {/* Email field */}
             <div>
-              <label htmlFor="usernameOrEmail" className="block text-sm font-medium text-gray-700">
-                Username or Email
+              <label htmlFor="usernameOrEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                Email or Username
               </label>
-              <input
-                id="usernameOrEmail"
-                name="usernameOrEmail"
-                type="text"
-                required
-                value={formData.usernameOrEmail}
-                onChange={handleChange}
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter username or email"
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-black" />
+                <input
+                  id="usernameOrEmail"
+                  name="usernameOrEmail"
+                  type="text"
+                  value={formData.usernameOrEmail}
+                  onChange={handleChange}
+                  className="w-full text-black pl-10 pr-3 py-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-colors"
+                  placeholder="Enter your email or username"
+                />
+              </div>
             </div>
-            
+
+            {/* Password field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Enter password"
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full text-black pl-10 pr-10 py-2.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-colors"
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
-          </div>
 
-          <div>
+            {/* Submit button */}
             <button
-              type="submit"
+              onClick={handleSubmit}
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-medium py-2.5 px-4 rounded-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                  Signing in...
+                </div>
+              ) : (
+                'Sign in'
+              )}
             </button>
           </div>
-        </form>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Don't have an account?{' '}
+          <button
+            onClick={navigateToRegister}
+            className="text-gray-900 font-medium hover:text-yellow-600 transition-colors"
+          >
+            Sign up
+          </button>
+        </p>
       </div>
     </div>
   );
