@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.svg';
 
 const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -48,14 +49,15 @@ const LandingPage: React.FC = () => {
 
             {/* Center - Logo (Absolute positioning for perfect centering) */}
             <div className="absolute sm:fixed left-1/2 transform -translate-x-1/2 top-0 z-50 hover:s">
-              <div className="relative bg-yellow-500 px-8 py-3 shadow-md rounded-b-full" style={{
+              <div className="relative bg-yellow-100 px-8 py-3 shadow-md rounded-b-full" style={{
                 clipPath: 'polygon(0% 0%, 100% 0%, 80% 140%, 20% 140%)',
                 minWidth: '180px',
                 textAlign: 'center'
               }}>
-                <h1 className="text-xl font-bold text-white">
+                {/* <h1 className="text-xl font-bold text-white">
                   Firstep Academy
-                </h1>
+                </h1> */}
+                <img src={logo} alt="Firstep Academy" className="w-24 h-10" />
               </div>
             </div>
 
