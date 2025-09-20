@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
@@ -61,14 +62,10 @@ const AppContent: React.FC = () => {
         } 
       />
 
-      {/* Default redirect */}
+      {/* Landing page */}
       <Route 
         path="/" 
-        element={
-          isAuthenticated ? 
-            <Navigate to="/dashboard" replace /> : 
-            <Navigate to="/login" replace />
-        } 
+        element={<LandingPage />} 
       />
 
       {/* Catch-all route */}
