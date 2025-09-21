@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import type { User, Course, EnrollmentStats } from '../../types';
 import enrollmentService from '../../services/enrollmentService';
-
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 interface StudentDashboard {
   message: string;
   availableCourses: number;
@@ -20,6 +21,8 @@ const StudentDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'teachers' | 'classmates'>('overview');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStudentData();
@@ -55,6 +58,15 @@ const StudentDashboard: React.FC = () => {
   if (error) {
     return <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>;
   }
+  
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -62,6 +74,15 @@ const StudentDashboard: React.FC = () => {
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <h2 className="text-xl font-semibold text-green-900 mb-2">Student Dashboard</h2>
         <p className="text-green-700">{dashboard?.message}</p>
+                    <button
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm">Logout</span>
+            </button>
       </div>
 
       {/* Stats Cards */}
