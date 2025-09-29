@@ -425,16 +425,6 @@ const PlayCourse = () => {
                     {currentContent.description ||
                       "No description available for this content."}
                   </p>
-                  {/* Show video URL for debugging (remove in production) */}
-                  {currentContent.contentType === ContentType.YOUTUBE_VIDEO && (
-                    <div className="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
-                      <strong>Debug Info:</strong>
-                      <br />
-                      Original URL: {currentContent.contentUrl}
-                      <br />
-                      Embed URL: {getYouTubeEmbedUrl(currentContent.contentUrl)}
-                    </div>
-                  )}
                 </>
               ) : (
                 <>
