@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import type { User, Course, EnrollmentStats } from '../../types';
 import enrollmentService from '../../services/enrollmentService';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import DashboardLayout from '../layouts/DashboardLayout';
 interface StudentDashboard {
   message: string;
   availableCourses: number;
@@ -13,6 +13,7 @@ interface StudentDashboard {
 }
 
 const StudentDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [dashboard, setDashboard] = useState<StudentDashboard | null>(null);
   const [teachers, setTeachers] = useState<User[]>([]);
   const [classmates, setClassmates] = useState<User[]>([]);
@@ -21,8 +22,6 @@ const StudentDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'teachers' | 'classmates'>('overview');
-  const { logout } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStudentData();
@@ -44,9 +43,12 @@ const StudentDashboard: React.FC = () => {
       setEnrolledCourses(enrolledCoursesResponse);
       setEnrollmentStats(enrollmentStatsResponse);
     } catch (err: any) {
-      setError('Failed to load student data');
-      console.error('Student data fetch error:', err);
-    } finally {
+  if (err.response?.status !== 401) {
+    setError('Failed to load student data');
+  }
+  console.error('Student data fetch error:', err);
+  }
+  finally {
       setLoading(false);
     }
   };
@@ -58,31 +60,14 @@ const StudentDashboard: React.FC = () => {
   if (error) {
     return <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>;
   }
-  
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
 
   return (
+    <DashboardLayout>
     <div className="space-y-6">
       {/* Welcome Message */}
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <h2 className="text-xl font-semibold text-green-900 mb-2">Student Dashboard</h2>
         <p className="text-green-700">{dashboard?.message}</p>
-                    <button
-              onClick={handleLogout}
-              className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
-              </svg>
-              <span className="text-sm">Logout</span>
-            </button>
       </div>
 
       {/* Stats Cards */}
@@ -257,7 +242,10 @@ const StudentDashboard: React.FC = () => {
                         </div>
                       </div>
                       <div className="mt-4">
-                        <button className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors">
+                        <button 
+                          onClick={() => navigate(`/student/courses/${course.id}/play`)}
+                          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
+                        >
                           Continue Learning
                         </button>
                       </div>
@@ -268,7 +256,10 @@ const StudentDashboard: React.FC = () => {
                 <div className="text-center py-12">
                   <div className="text-gray-500 text-lg mb-4">No courses enrolled yet</div>
                   <p className="text-gray-400 mb-6">Browse and enroll in courses to start learning!</p>
-                  <button className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors">
+                  <button 
+                    onClick={() => navigate('/student/all-courses')}
+                    className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors"
+                  >
                     Browse Courses
                   </button>
                 </div>
@@ -328,6 +319,7 @@ const StudentDashboard: React.FC = () => {
         </div>
       </div>
     </div>
+    </DashboardLayout>
   );
 };
 

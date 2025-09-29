@@ -1,8 +1,12 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { AuthResponse, LoginRequest, RegisterRequest } from '../types';
 import { Role } from '../types';
 import authService from '../services/authService';
+
+
+// Get the authenticated user and provide it to other components
 
 interface AuthContextType {
   user: AuthResponse | null;
@@ -31,10 +35,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Check if user is logged in on app start
     const initializeAuth = () => {
       const storedUser = authService.getStoredUser();
-      const token = authService.getToken();
+      const token = authService.getValidToken();
       
       if (storedUser && token) {
         setUser(storedUser);
+      } else if (!token) {
+        // Clear any invalid state and stay unauthenticated
+        authService.logout();
       }
       
       setLoading(false);

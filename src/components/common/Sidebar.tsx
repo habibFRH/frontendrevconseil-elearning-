@@ -34,73 +34,52 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
       path: '/dashboard',
       roles: [Role.TEACHER, Role.ADMIN]
     },
-    {
-      id: 'courses',
-      label: 'My Courses',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      path: '/teacher/courses',
-      roles: [Role.TEACHER]
-    },
-    {
-      id: 'students',
-      label: 'Students',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
-        </svg>
-      ),
-      path: '/teacher/students',
-      roles: [Role.TEACHER]
-    },
-    {
-      id: 'analytics',
-      label: 'Analytics',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-        </svg>
-      ),
-      path: '/teacher/analytics',
-      roles: [Role.TEACHER]
-    },
+    // {
+    //   id: 'courses',
+    //   label: 'My Courses',
+    //   icon: (
+    //     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    //       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    //     </svg>
+    //   ),
+    //   path: '/teacher/courses',
+    //   roles: [Role.TEACHER]
+    // },
+    // {
+    //   id: 'students',
+    //   label: 'Students',
+    //   icon: (
+    //     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    //       <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+    //     </svg>
+    //   ),
+    //   path: '/teacher/students',
+    //   roles: [Role.TEACHER]
+    // },
+    // {
+    //   id: 'analytics',
+    //   label: 'Analytics',
+    //   icon: (
+    //     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    //       <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+    //     </svg>
+    //   ),
+    //   path: '/teacher/analytics',
+    //   roles: [Role.TEACHER]
+    // },
     // Admin-specific items
-    {
-      id: 'users',
-      label: 'User Management',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-        </svg>
-      ),
-      path: '/admin/users',
-      roles: [Role.ADMIN]
-    },
-    {
-      id: 'all-courses',
-      label: 'All Courses',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-        </svg>
-      ),
-      path: '/admin/courses',
-      roles: [Role.ADMIN]
-    },
-    {
-      id: 'reports',
-      label: 'Reports',
-      icon: (
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-        </svg>
-      ),
-      path: '/admin/reports',
-      roles: [Role.ADMIN]
-    },
+
+    // {
+    //   id: 'all-courses',
+    //   label: 'All Courses',
+    //   icon: (
+    //     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    //       <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+    //     </svg>
+    //   ),
+    //   path: '/admin/courses',
+    //   roles: [Role.ADMIN]
+    // }
     {
       id: 'settings',
       label: 'Settings',
@@ -109,9 +88,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
           <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
         </svg>
       ),
-      path: '/admin/settings',
-      roles: [Role.ADMIN]
-    }
+      path: '/settings',
+      roles: [Role.ADMIN, Role.TEACHER]
+    },
   ];
 
   // Filter items based on user role
@@ -149,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
       {/* Mobile overlay */}
       {isOpen && (
         <button
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden border-0 p-0 m-0"
+          className="fixed inset-0 bg-black opacity-50 bg-opacity-50 z-40 md:hidden border-0 p-0 m-0"
           onClick={onToggle}
           onKeyDown={(e) => e.key === 'Escape' && onToggle()}
           aria-label="Close sidebar"
@@ -170,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
               <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">RC</span>
               </div>
-              <div>
+              <div className="text-left">
                 <h2 className="font-semibold text-gray-900">RevConseil</h2>
                 <p className="text-xs text-gray-500 capitalize">{user?.role?.toLowerCase()}</p>
               </div>
@@ -225,7 +204,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle }) => {
             
             <button
               onClick={handleLogout}
-              className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors"
+              className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left bg-red-400 text-white hover:bg-red-700 transition-colors"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />

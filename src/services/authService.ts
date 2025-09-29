@@ -77,6 +77,44 @@ class AuthService {
   }
 
   /**
+   * Decode a JWT payload (no signature verification)
+   */
+  private decodeJwtPayload<T = unknown>(token: string): T | null {
+    try {
+      const payload = token.split('.')[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const json = atob(base64);
+      return JSON.parse(json);
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Returns true if JWT is expired based on exp claim
+   */
+  isTokenExpired(token: string): boolean {
+    const payload = this.decodeJwtPayload<{ exp?: number }>(token);
+    if (!payload?.exp) return false;
+    const expiresAtMs = payload.exp * 1000;
+    return Date.now() >= expiresAtMs;
+  }
+
+  /**
+   * Get token only if valid (not expired). Otherwise clears storage and returns null.
+   */
+  getValidToken(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    if (this.isTokenExpired(token)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      return null;
+    }
+    return token;
+  }
+
+  /**
    * Get stored user data
    */
   getStoredUser(): AuthResponse | null {
