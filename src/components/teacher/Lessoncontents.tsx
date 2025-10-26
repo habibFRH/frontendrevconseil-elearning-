@@ -61,6 +61,7 @@ const LessonContents: React.FC = () => {
       addToast("Failed to delete content", "error");
     } finally {
       setConfirmOpen(false);
+      setSelectedContent(null);
     }
   };
 
@@ -68,36 +69,49 @@ const LessonContents: React.FC = () => {
     if (!lessonId) return;
     try {
       // Map dialog data to backend LessonContentRequest
-      // Support url-based types for now
       let contentType: ContentType;
+      let contentUrl: string;
+
       switch (data.type) {
         case 'youtube':
           contentType = ContentType.YOUTUBE_VIDEO;
+          contentUrl = data.url as string;
           break;
         case 'external_link':
           contentType = ContentType.EXTERNAL_LINK;
+          contentUrl = data.url as string;
           break;
         case 'upload_video':
-          addToast('Direct file upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.UPLOADED_VIDEO;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         case 'upload_document':
-          addToast('Direct document upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.DOCUMENT;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         case 'upload_audio':
-          addToast('Direct audio upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.AUDIO;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         case 'upload_image':
-          addToast('Direct image upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.IMAGE;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         default:
           contentType = ContentType.EXTERNAL_LINK;
+          contentUrl = data.url as string;
+      }
+
+      if (!contentUrl) {
+        addToast('Please upload a file or provide a URL.', 'error');
+        return;
       }
 
       const payload = {
         title: data.title,
         description: data.description,
         contentType,
-        contentUrl: data.url as string,
+        contentUrl,
         contentOrder: Number(data.order) || 1,
         isDownloadable: !!data.isDownloadable,
       };
@@ -117,34 +131,48 @@ const LessonContents: React.FC = () => {
     try {
       // Map dialog data to backend LessonContentRequest
       let contentType: ContentType;
+      let contentUrl: string;
+
       switch (data.type) {
         case 'youtube':
           contentType = ContentType.YOUTUBE_VIDEO;
+          contentUrl = data.url as string;
           break;
         case 'external_link':
           contentType = ContentType.EXTERNAL_LINK;
+          contentUrl = data.url as string;
           break;
         case 'upload_video':
-          addToast('Direct file upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.UPLOADED_VIDEO;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         case 'upload_document':
-          addToast('Direct document upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.DOCUMENT;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         case 'upload_audio':
-          addToast('Direct audio upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.AUDIO;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         case 'upload_image':
-          addToast('Direct image upload not supported yet. Please provide a URL.', 'error');
-          return;
+          contentType = ContentType.IMAGE;
+          contentUrl = data.uploadedFileUrl || data.url;
+          break;
         default:
           contentType = ContentType.EXTERNAL_LINK;
+          contentUrl = data.url as string;
+      }
+
+      if (!contentUrl) {
+        addToast('Please upload a file or provide a URL.', 'error');
+        return;
       }
 
       const payload = {
         title: data.title,
         description: data.description,
         contentType,
-        contentUrl: data.url as string,
+        contentUrl,
         contentOrder: Number(data.order) || 1,
         isDownloadable: !!data.isDownloadable,
       };
@@ -267,9 +295,12 @@ const LessonContents: React.FC = () => {
         <ConfirmDialog
           isOpen={confirmOpen && !!selectedContent}
           onConfirm={handleDelete}
-          onCancel={() => setConfirmOpen(false)}
+          onCancel={() => {
+            setConfirmOpen(false);
+            setSelectedContent(null);
+          }}
           title="Delete Content"
-          message={`Are you sure you want to delete "${selectedContent?.title}"? This action cannot be undone.`}
+          message={`Are you sure you want to delete "${selectedContent?.title || 'this content'}"? This action cannot be undone.`}
           confirmText="Delete Content"
           type="danger"
         />
@@ -290,10 +321,23 @@ const LessonContents: React.FC = () => {
               title: editingContent.title,
               description: editingContent.description || "",
               order: editingContent.contentOrder,
-              type:
-                editingContent.contentType === "YOUTUBE_VIDEO"
-                  ? "youtube"
-                  : "external_link",
+              type: (() => {
+                switch (editingContent.contentType) {
+                  case "YOUTUBE_VIDEO":
+                    return "youtube";
+                  case "UPLOADED_VIDEO":
+                    return "upload_video";
+                  case "DOCUMENT":
+                    return "upload_document";
+                  case "AUDIO":
+                    return "upload_audio";
+                  case "IMAGE":
+                    return "upload_image";
+                  case "EXTERNAL_LINK":
+                  default:
+                    return "external_link";
+                }
+              })(),
               url: editingContent.contentUrl,
               isDownloadable: editingContent.isDownloadable,
               existingFileUrl: editingContent.contentUrl,

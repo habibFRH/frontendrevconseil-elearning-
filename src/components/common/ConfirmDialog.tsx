@@ -29,8 +29,6 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   userInput = '',
   onInputChange
 }) => {
-  console.log('ConfirmDialog render:', { isOpen, title, message, type });
-  
   if (!isOpen) return null;
 
   const getTypeStyles = () => {
