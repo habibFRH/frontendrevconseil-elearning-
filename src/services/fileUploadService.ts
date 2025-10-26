@@ -25,6 +25,7 @@ class FileUploadService {
       },
     });
 
+    console.log('File upload response:', response.data); // Debug log
     return response.data;
   }
 

@@ -34,6 +34,8 @@ const PlayCourse = () => {
   const [error, setError] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [videoError, setVideoError] = useState<string>("");
+  const [pdfError, setPdfError] = useState<boolean>(false);
+  const [pdfLoading, setPdfLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (courseId) {
@@ -116,6 +118,19 @@ const PlayCourse = () => {
   const selectContent = (content: LessonContent) => {
     setCurrentContent(content);
     setVideoError(""); // Reset video error when selecting new content
+    setPdfError(false); // Reset PDF error when selecting new content
+    setPdfLoading(content.contentType === "DOCUMENT" && content.contentUrl?.toLowerCase().endsWith('.pdf')); // Set loading for PDFs
+    
+    // Set timeout for PDF loading
+    if (content.contentType === "DOCUMENT" && content.contentUrl?.toLowerCase().endsWith('.pdf')) {
+      setTimeout(() => {
+        if (pdfLoading) {
+          setPdfError(true);
+          setPdfLoading(false);
+        }
+      }, 10000); // 10 second timeout
+    }
+    
     // Close sidebar on mobile when content is selected
     setSidebarOpen(false);
     // You can add progress tracking logic here if needed
@@ -165,6 +180,16 @@ const PlayCourse = () => {
     setVideoError(
       "This video cannot be played. It may be restricted or unavailable."
     );
+  };
+
+  const handlePdfError = () => {
+    setPdfError(true);
+    setPdfLoading(false);
+  };
+
+  const handlePdfLoad = () => {
+    setPdfLoading(false);
+    setPdfError(false);
   };
 
   const renderCurrentContent = () => {
@@ -250,29 +275,6 @@ const PlayCourse = () => {
             Your browser does not support the video tag.
           </video>
         );
-      case ContentType.DOCUMENT: {
-        const isPdf = url.toLowerCase().endsWith(".pdf");
-        return isPdf ? (
-          <iframe
-            className="w-full h-full bg-white"
-            src={url}
-            title={currentContent.title}
-            onError={handleVideoError}
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-white">
-            <FileText className="w-5 h-5 mr-2" />
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              Open document
-            </a>
-          </div>
-        );
-      }
       case ContentType.EXTERNAL_LINK:
         return (
           <iframe
@@ -313,6 +315,127 @@ const PlayCourse = () => {
             <span>Unsupported content type</span>
           </div>
         );
+    }
+  };
+
+  const renderDocumentContent = () => {
+    if (!currentContent || currentContent.contentType !== ContentType.DOCUMENT) {
+      return null;
+    }
+
+    const url = currentContent.contentUrl;
+    const isPdf = url.toLowerCase().endsWith(".pdf");
+    console.log("Document URL:", url, "Type:", isPdf ? "PDF" : "Other"); // Debug log
+
+    if (isPdf) {
+      return (
+        <div className="w-full h-full bg-white flex flex-col">
+          <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+            <div className="flex items-center space-x-2">
+              <FileText className="w-5 h-5 text-gray-600" />
+              <span className="font-medium text-gray-800">{currentContent.title}</span>
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = currentContent.title + '.pdf';
+                  link.click();
+                }}
+                className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Download
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 w-full relative">
+            {pdfLoading && !pdfError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading PDF...</p>
+                </div>
+              </div>
+            )}
+            <iframe
+              className="w-full h-full border-0"
+              src={`${url}#toolbar=1&navpanes=1&scrollbar=1&view=FitH`}
+              title={currentContent.title}
+              onError={handlePdfError}
+              onLoad={handlePdfLoad}
+              style={{
+                minHeight: '600px',
+                height: '100%'
+              }}
+            />
+            {pdfError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                <div className="text-center">
+                  <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    PDF Loading Failed
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    The PDF cannot be displayed inline. Please try downloading it.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setPdfError(false);
+                      setPdfLoading(true);
+                      // Force iframe reload
+                      const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+                      if (iframe) {
+                        const currentSrc = iframe.src;
+                        iframe.src = '';
+                        setTimeout(() => {
+                          iframe.src = currentSrc;
+                        }, 100);
+                      }
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    } else {
+      // Handle other document types
+      return (
+        <div className="w-full h-full bg-white flex flex-col">
+          <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+            <div className="flex items-center space-x-2">
+              <FileText className="w-5 h-5 text-gray-600" />
+              <span className="font-medium text-gray-800">{currentContent.title}</span>
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = currentContent.title;
+                  link.click();
+                }}
+                className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Download
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 w-full p-4">
+            <iframe
+              className="w-full h-full border-0"
+              src={url}
+              title={currentContent.title}
+              onError={handleVideoError}
+            />
+          </div>
+        </div>
+      );
     }
   };
 
@@ -403,40 +526,63 @@ const PlayCourse = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row min-h-[calc(100vh-80px)]">
-        {/* Left Section - Video Player */}
+        {/* Left Section - Content Area */}
         <div className="flex-1 bg-white lg:border-r border-gray-200 order-2 lg:order-1">
           <div className="p-4 sm:p-6 min-h-full">
-            {/* Content Player */}
-            <div
-              className="relative bg-black rounded-lg overflow-hidden mb-4 sm:mb-6 w-full max-w-none lg:max-w-[1000px]"
-              style={{ aspectRatio: "16/9" }}
-            >
-              {renderCurrentContent()}
-            </div>
-
-            {/* Content Info */}
-            <div className="pb-4 sm:pb-8">
-              {currentContent ? (
-                <>
+            {/* Check if current content is a document */}
+            {currentContent && currentContent.contentType === ContentType.DOCUMENT ? (
+              // Document Viewer - Full Height
+              <>
+                <div className="h-[calc(100vh-200px)] rounded-lg overflow-hidden border border-gray-200">
+                  {renderDocumentContent()}
+                </div>
+                
+                {/* Document Info */}
+                <div className="mt-4">
                   <h2 className="text-xl sm:text-2xl font-bold text-left text-gray-900 mb-3">
                     {currentContent.title}
                   </h2>
                   <p className="text-sm sm:text-base text-gray-700 text-left leading-relaxed">
                     {currentContent.description ||
-                      "No description available for this content."}
+                      "No description available for this document."}
                   </p>
-                </>
-              ) : (
-                <>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                    Welcome to {course.title}
-                  </h2>
-                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
-                    {course.description}
-                  </p>
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            ) : (
+              // Video Player - 16:9 Aspect Ratio
+              <>
+                <div
+                  className="relative bg-black rounded-lg overflow-hidden mb-4 sm:mb-6 w-full max-w-none lg:max-w-[1000px]"
+                  style={{ aspectRatio: "16/9" }}
+                >
+                  {renderCurrentContent()}
+                </div>
+
+                {/* Content Info */}
+                <div className="pb-4 sm:pb-8">
+                  {currentContent ? (
+                    <>
+                      <h2 className="text-xl sm:text-2xl font-bold text-left text-gray-900 mb-3">
+                        {currentContent.title}
+                      </h2>
+                      <p className="text-sm sm:text-base text-gray-700 text-left leading-relaxed">
+                        {currentContent.description ||
+                          "No description available for this content."}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                        Welcome to {course.title}
+                      </h2>
+                      <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                        {course.description}
+                      </p>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
